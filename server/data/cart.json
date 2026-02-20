@@ -1,0 +1,33 @@
+{
+  "items": [
+    {
+      "id": 3,
+      "name": "Orthopedic Pillow Pair",
+      "category": "Pillows",
+      "price": 1499,
+      "originalPrice": 2499,
+      "rating": 4.6,
+      "reviews": 3245,
+      "image": "https://images.unsplash.com/photo-1584622614875-2f8151013f23?w=400&h=300&fit=crop",
+      "discount": "40% off",
+      "tag": "Bestseller",
+      "description": "Cervical support pillow designed for neck health. Reduces neck pain and improves sleep quality. CFC-free memory foam.",
+      "quantity": 1
+    },
+    {
+      "id": 1,
+      "name": "Premium Memory Foam Mattress",
+      "category": "Mattresses",
+      "price": 24999,
+      "originalPrice": 34999,
+      "rating": 4.5,
+      "reviews": 2341,
+      "image": "https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=400&h=300&fit=crop",
+      "discount": "29% off",
+      "tag": "Bestseller",
+      "description": "Experience ultimate comfort with our premium memory foam mattress. Perfect for side, back, and stomach sleepers. Hypoallergenic and dust mite resistant.",
+      "quantity": 1
+    }
+  ],
+  "total": 26498
+}

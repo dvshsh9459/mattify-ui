@@ -10,7 +10,7 @@ const categoryIcons = {
   'Accessories': Gift
 }
 
-export default function Header({ searchQuery, setSearchQuery, cartCount, categories, selectedCategory, setSelectedCategory, onOpenLogin, onOpenCart }) {
+export default function Header({ searchQuery, setSearchQuery, cartCount, categories, selectedCategory, setSelectedCategory, onOpenLogin, onOpenCart, onLogoClick }) {
   const requestedOrder = ['All', 'Mattresses', 'Bed Sheets', 'Pillows', 'Comforters', 'Accessories']
   const visibleCategories = requestedOrder.filter((category) => categories.includes(category))
 
@@ -19,7 +19,13 @@ export default function Header({ searchQuery, setSearchQuery, cartCount, categor
       <nav className="navbar navbar-light px-3 py-1 app-navbar">
         <div className="container-fluid app-navbar-grid">
           <div className="app-navbar-left">
-            <h1 className="navbar-brand mb-0 fw-bold app-logo">Mattify</h1>
+            <button
+              type="button"
+              className="navbar-brand mb-0 fw-bold app-logo border-0 bg-transparent p-0"
+              onClick={onLogoClick}
+            >
+              Mattify
+            </button>
           </div>
 
           <div className="app-navbar-center">

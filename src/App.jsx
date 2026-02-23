@@ -24,6 +24,7 @@ export default function App(){
   const [currentProduct, setCurrentProduct] = useState(null)
   const [showLogin, setShowLogin] = useState(false)
   const [showCart, setShowCart] = useState(false)
+  const isSearching = searchQuery.trim().length > 0
 
   const filteredProducts = productsState.filter(p => (selectedCategory === 'All' || p.category === selectedCategory) && p.name.toLowerCase().includes(searchQuery.toLowerCase()))
 
@@ -91,11 +92,13 @@ export default function App(){
         setFlashMessage(`${product.name} added to cart`)
         if (flashTimerRef.current) clearTimeout(flashTimerRef.current)
         flashTimerRef.current = setTimeout(() => setFlashMessage(null), 5000)
-        setShowCart(true)
       }
     } catch (e) {
       console.log('Cart add failed, using local cart')
       setCart(c => [...c, { ...product, quantity: 1 }])
+      setFlashMessage(`${product.name} added to cart`)
+      if (flashTimerRef.current) clearTimeout(flashTimerRef.current)
+      flashTimerRef.current = setTimeout(() => setFlashMessage(null), 5000)
     }
   }
 
@@ -109,8 +112,23 @@ export default function App(){
     localStorage.setItem('demo_token', token)
   }
 
-  const openCart = () => setShowCart(true)
+  const openCart = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/cart`)
+      if (res.ok) {
+        const latestCart = await res.json()
+        setCart(latestCart.items || [])
+      }
+    } catch (e) {
+      console.log('Using local cart state (API unavailable)')
+    }
+    setShowCart(true)
+  }
   const openLogin = () => setShowLogin(true)
+  const handleLogoClick = () => {
+    setSelectedCategory('All')
+    setSearchQuery('')
+  }
 
   const removeFromCart = async (productId) => {
     try {
@@ -144,9 +162,11 @@ export default function App(){
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         onOpenLogin={openLogin}
+        onOpenCart={openCart}
+        onLogoClick={handleLogoClick}
       />
 
-      {selectedCategory === 'All' && (
+      {selectedCategory === 'All' && !isSearching && (
         <Banner slides={bannersState} currentIndex={currentBannerIndex} onPrev={prevBanner} onNext={nextBanner} onSelect={setCurrentBannerIndex} />
       )}
 
@@ -158,7 +178,7 @@ export default function App(){
           </div>
         )}
         
-        {selectedCategory === 'All' && (
+        {selectedCategory === 'All' && !isSearching && (
           <>
             <section className="mb-5">
               <div className="d-flex align-items-center justify-content-between mb-3">
@@ -170,10 +190,19 @@ export default function App(){
               </div>
               <div id="deals-container" className="d-flex gap-3 overflow-auto scrollbar-hide" style={{scrollBehavior: 'smooth'}}>
                 {productsState.slice(0,6).map(product => (
-                  <div key={product.id} className="card shadow-sm transition bg-white rounded-3 h-100 product-card" style={{minWidth: '240px', cursor: 'pointer'}} title={product.name}>
+                  <div
+                    key={product.id}
+                    className="card shadow-sm transition bg-white rounded-3 product-card"
+                    style={{minWidth: '240px', cursor: 'pointer'}}
+                    title={product.name}
+                    onClick={() => handleViewProduct(product)}
+                  >
                     <div className="position-relative overflow-hidden rounded-top-3 product-card-media">
                       <img src={product.image} alt={product.name} className="w-100 h-100 transition" style={{objectFit: 'cover'}} />
                       <span className="position-absolute top-0 start-0 badge bg-danger m-2 fw-semibold">{product.discount}</span>
+                      {product.tag && (
+                        <span className="position-absolute top-0 end-0 badge bg-success m-2 fw-semibold">{product.tag}</span>
+                      )}
                     </div>
                     <div className="card-body p-2 product-card-body">
                       <h5 className="fw-semibold text-sm mb-2 product-card-title" title={product.name}>{product.name}</h5>
@@ -181,29 +210,7 @@ export default function App(){
                         <span className="h6 fw-bold mb-0">₹{product.price.toLocaleString()}</span>
                         <span className="text-muted text-decoration-line-through" style={{fontSize: '0.75rem'}}>₹{product.originalPrice.toLocaleString()}</span>
                       </div>
-                      <button onClick={() => addToCart(product)} className="w-100 btn btn-primary btn-sm fw-medium mt-auto py-1">Add to Cart</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="mb-5">
-              <div className="d-flex align-items-center justify-content-between mb-3">
-                <h3 className="h4 fw-bold">Bestsellers</h3>
-                <a href="#" className="link-primary fw-semibold text-primary">View All</a>
-              </div>
-              <div className="row g-3">
-                {productsState.filter(p => p.tag === 'Bestseller').map(product => (
-                  <div key={product.id} className="col-6 col-md-4 col-lg-2">
-                    <div className="card shadow-sm transition bg-white rounded-3 h-100 product-card" style={{cursor: 'pointer'}} title={product.name}>
-                      <div className="position-relative overflow-hidden rounded-top-3" style={{height: '120px'}}>
-                        <img src={product.image} alt={product.name} className="w-100 h-100 transition" style={{objectFit: 'cover'}} />
-                      </div>
-                      <div className="card-body p-2 product-card-body">
-                        <h6 className="fw-semibold mb-1 product-card-title" style={{fontSize: '0.75rem'}} title={product.name}>{product.name}</h6>
-                        <span className="h6 fw-bold mb-0">₹{product.price.toLocaleString()}</span>
-                      </div>
+                      <button onClick={(e) => { e.stopPropagation(); addToCart(product) }} className="w-100 btn btn-primary btn-sm fw-medium mt-auto py-1">Add to Cart</button>
                     </div>
                   </div>
                 ))}
@@ -269,7 +276,7 @@ export default function App(){
         </div>
       </main>
 
-      {showProduct && <ProductModal product={currentProduct} onClose={() => setShowProduct(false)} onAddToCart={(p) => { addToCart(p); setShowProduct(false); setShowCart(true) }} />}
+      {showProduct && <ProductModal product={currentProduct} onClose={() => setShowProduct(false)} onAddToCart={(p) => { addToCart(p); setShowProduct(false) }} />}
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} onLoginSuccess={handleLoginSuccess} />}
       {showCart && <CartModal cartItems={cart} onClose={() => setShowCart(false)} onRemoveFromCart={removeFromCart} />}
 

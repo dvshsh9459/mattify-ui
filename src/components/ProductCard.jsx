@@ -1,5 +1,5 @@
 import React from 'react'
-import { Heart, Star } from './Icons'
+import { Star } from './Icons'
 
 export default function ProductCard({ product, onAdd, onView }) {
   const [isHovered, setIsHovered] = React.useState(false)
@@ -7,7 +7,7 @@ export default function ProductCard({ product, onAdd, onView }) {
   
   return (
     <div 
-      className="card shadow-sm transition rounded-3 h-100 product-card"
+      className="card shadow-sm transition rounded-3 product-card"
       title={product.name}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -32,8 +32,12 @@ export default function ProductCard({ product, onAdd, onView }) {
             <span className="text-muted">Image not available</span>
           </div>
         )}
-        {product.tag && <span className="position-absolute top-2 start-2 badge bg-success">{product.tag}</span>}
-        <button className="position-absolute top-2 end-2 btn btn-light rounded-circle p-2 shadow" style={{opacity: isHovered ? 1 : 0, transition: 'opacity 0.3s ease'}}><Heart /></button>
+        {product.discount && (
+          <span className="position-absolute top-0 start-0 badge bg-danger m-2 fw-semibold">{product.discount}</span>
+        )}
+        {product.tag && (
+          <span className="position-absolute top-0 end-0 badge bg-success m-2 fw-semibold">{product.tag}</span>
+        )}
       </div>
 
       <div className="card-body product-card-body">
@@ -53,7 +57,6 @@ export default function ProductCard({ product, onAdd, onView }) {
         <div className="d-flex align-items-center gap-2 mb-2">
           <span className="fw-bold" style={{fontSize: '1.125rem'}}>₹{product.price.toLocaleString()}</span>
           <span className="text-muted text-decoration-line-through" style={{fontSize: '0.875rem'}}>₹{product.originalPrice.toLocaleString()}</span>
-          <span className="text-success fw-semibold" style={{fontSize: '0.875rem'}}>{product.discount}</span>
         </div>
 
         <button onClick={(e) => { e.stopPropagation(); onAdd(product) }} className="w-100 btn btn-primary fw-medium rounded-2 mt-auto py-1">Add to Cart</button>

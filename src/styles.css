@@ -23,6 +23,11 @@ body {
   scrollbar-width: none;
 }
 
+/* Deals of the Day: prevent flex stretch causing tall cards/empty space */
+#deals-container {
+  align-items: flex-start;
+}
+
 /* Custom Bootstrap overrides */
 .line-clamp-2 {
   display: -webkit-box;
@@ -69,7 +74,7 @@ textarea:hover {
 }
 
 .product-card {
-  height: 100%;
+  height: auto;
 }
 
 .product-card-media {
@@ -120,6 +125,8 @@ textarea:hover {
 .app-navbar-center {
   justify-self: center;
   max-width: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .app-navbar-right {
@@ -132,6 +139,33 @@ textarea:hover {
 
 .app-search-wrap {
   max-width: 280px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.app-search-wrap .input-group-text,
+.app-search-input {
+  background-color: #f0f5ff !important;
+  color: #1f2937;
+  border: 1px solid #d6e4ff !important;
+}
+
+.app-search-wrap .input-group-text {
+  border-right: 0 !important;
+}
+
+.app-search-input {
+  border-left: 0 !important;
+}
+
+.app-search-wrap:focus-within .input-group-text,
+.app-search-wrap:focus-within .app-search-input {
+  border-color: #3b82f6 !important;
+}
+
+.app-search-input::placeholder {
+  color: #6b7280;
+  opacity: 1;
 }
 
 .app-search-input,
@@ -147,14 +181,14 @@ textarea:hover {
 
 .category-strip {
   overflow-x: auto;
-  padding-bottom: 2px;
+  padding: 2px 0;
 }
 
 .category-row {
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   width: max-content;
   margin: 0 auto;
@@ -172,15 +206,25 @@ textarea:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   text-align: center;
   transition: all 0.2s ease;
 }
 
+.category-button:focus {
+  outline: none;
+}
+
+.category-button:focus-visible {
+  outline: 2px solid rgba(13, 110, 253, 0.45);
+  outline-offset: 2px;
+}
+
 .category-button[data-selected='true'] {
   background: rgba(13, 110, 253, 0.06);
-  border-color: #0d6efd;
+  border-color: transparent;
   color: #0d6efd;
+  box-shadow: 0 10px 22px rgba(13, 110, 253, 0.18), 0 3px 8px rgba(0, 0, 0, 0.06);
 }
 
 .category-icon-box {

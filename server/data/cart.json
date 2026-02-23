@@ -1,4 +1,4 @@
-{
+﻿{
   "items": [
     {
       "id": 3,
@@ -8,7 +8,7 @@
       "originalPrice": 2499,
       "rating": 4.6,
       "reviews": 3245,
-      "image": "https://images.unsplash.com/photo-1584622614875-2f8151013f23?w=400&h=300&fit=crop",
+      "image": "/images/product-placeholder.svg",
       "discount": "40% off",
       "tag": "Bestseller",
       "description": "Cervical support pillow designed for neck health. Reduces neck pain and improves sleep quality. CFC-free memory foam.",
@@ -22,7 +22,7 @@
       "originalPrice": 34999,
       "rating": 4.5,
       "reviews": 2341,
-      "image": "https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=400&h=300&fit=crop",
+      "image": "/images/product-placeholder.svg",
       "discount": "29% off",
       "tag": "Bestseller",
       "description": "Experience ultimate comfort with our premium memory foam mattress. Perfect for side, back, and stomach sleepers. Hypoallergenic and dust mite resistant.",

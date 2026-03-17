@@ -1,9 +1,11 @@
 import React from 'react'
 import { Star } from './Icons'
+import { formatDiscount } from '../utils/formatProductValue'
 
 export default function ProductCard({ product, onAdd, onView }) {
   const [isHovered, setIsHovered] = React.useState(false)
   const [imageError, setImageError] = React.useState(false)
+  const discountLabel = formatDiscount(product.discount)
   
   return (
     <div 
@@ -19,6 +21,7 @@ export default function ProductCard({ product, onAdd, onView }) {
           <img 
             src={product.image} 
             alt={product.name} 
+            title={product.name}
             className="w-100 h-100 transition" 
             onError={() => setImageError(true)}
             style={{
@@ -32,8 +35,8 @@ export default function ProductCard({ product, onAdd, onView }) {
             <span className="text-muted">Image not available</span>
           </div>
         )}
-        {product.discount && (
-          <span className="position-absolute top-0 start-0 badge bg-danger m-2 fw-semibold">{product.discount}</span>
+        {discountLabel && (
+          <span className="position-absolute top-0 start-0 badge bg-danger m-2 fw-semibold">{discountLabel}</span>
         )}
         {product.tag && (
           <span className="position-absolute top-0 end-0 badge bg-success m-2 fw-semibold">{product.tag}</span>

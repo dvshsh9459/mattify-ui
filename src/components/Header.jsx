@@ -10,7 +10,7 @@ const categoryIcons = {
   'Accessories': Gift
 }
 
-export default function Header({ searchQuery, setSearchQuery, cartCount, categories, selectedCategory, setSelectedCategory, onOpenLogin, onOpenCart, onLogoClick }) {
+export default function Header({ searchQuery, setSearchQuery, cartCount, categories, selectedCategory, onSelectCategory, onOpenLogin, onOpenProfile, onLogout, onOpenCart, onLogoClick, user }) {
   const requestedOrder = ['All', 'Mattresses', 'Bed Sheets', 'Pillows', 'Comforters', 'Accessories']
   const visibleCategories = requestedOrder.filter((category) => categories.includes(category))
 
@@ -24,7 +24,7 @@ export default function Header({ searchQuery, setSearchQuery, cartCount, categor
               className="navbar-brand mb-0 fw-bold app-logo border-0 bg-transparent p-0"
               onClick={onLogoClick}
             >
-              Mattify
+              <img src="/images/logo.jpeg" alt="Mattify" className="app-logo-img" />
             </button>
           </div>
 
@@ -38,7 +38,7 @@ export default function Header({ searchQuery, setSearchQuery, cartCount, categor
                   return (
                     <button
                       key={category}
-                      onClick={() => setSelectedCategory(category)}
+                      onClick={() => onSelectCategory && onSelectCategory(category)}
                       className="category-button"
                       data-selected={isSelected}
                       title={category}
@@ -58,32 +58,51 @@ export default function Header({ searchQuery, setSearchQuery, cartCount, categor
                 })}
               </div>
             </div>
+
+            <div className="app-header-actions">
+              <div className="input-group app-search-wrap">
+                <span className="input-group-text bg-light border-0"><Search /></span>
+                <input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  type="text"
+                  placeholder="Search..."
+                  className="form-control bg-light border-0 app-search-input"
+                />
+              </div>
+
+              <div className="app-auth-actions">
+                {user ? (
+                  <>
+                    <button onClick={onOpenProfile} className="btn btn-link text-decoration-none text-dark d-flex align-items-center gap-2 app-action-btn">
+                      <User />
+                      <span className="d-none d-sm-inline">{user.name || 'Profile'}</span>
+                    </button>
+                    <button onClick={onLogout} className="btn btn-link text-decoration-none text-dark d-flex align-items-center gap-2 app-action-btn">
+                      <span className="d-none d-sm-inline">Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={onOpenLogin} className="btn btn-link text-decoration-none text-dark d-flex align-items-center gap-2 app-action-btn">
+                      <User />
+                      <span className="d-none d-sm-inline">Login</span>
+                    </button>
+                  </>
+                )}
+              </div>
+
+              <button title="Cart" className="btn btn-link text-decoration-none text-dark d-flex align-items-center gap-2 position-relative app-action-btn" onClick={() => onOpenCart && onOpenCart()}>
+                <ShoppingCart />
+                <span className="d-none d-sm-inline">Cart</span>
+                {cartCount > 0 && (
+                  <span className="position-absolute badge bg-danger app-cart-badge">{cartCount}</span>
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="app-navbar-right">
-            <div className="input-group app-search-wrap">
-              <span className="input-group-text bg-light border-0"><Search /></span>
-              <input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                type="text"
-                placeholder="Search..."
-                className="form-control bg-light border-0 app-search-input"
-              />
-            </div>
-
-            <button onClick={onOpenLogin} className="btn btn-link text-decoration-none text-dark d-flex align-items-center gap-2 app-action-btn">
-              <User />
-              <span className="d-none d-sm-inline">Login</span>
-            </button>
-
-            <button title="Cart" className="btn btn-link text-decoration-none text-dark d-flex align-items-center gap-2 position-relative app-action-btn" onClick={() => onOpenCart && onOpenCart()}>
-              <ShoppingCart />
-              <span className="d-none d-sm-inline">Cart</span>
-              {cartCount > 0 && (
-                <span className="position-absolute badge bg-danger app-cart-badge">{cartCount}</span>
-              )}
-            </button>
           </div>
         </div>
       </nav>

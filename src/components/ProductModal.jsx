@@ -1,7 +1,9 @@
 import React from 'react'
+import { formatDiscount } from '../utils/formatProductValue'
 
 export default function ProductModal({ product, onClose, onAddToCart }) {
   if (!product) return null
+  const discountLabel = formatDiscount(product.discount)
 
   return (
     <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{zIndex: 2000, backgroundColor: 'rgba(0,0,0,0.5)'}}>
@@ -20,7 +22,7 @@ export default function ProductModal({ product, onClose, onAddToCart }) {
             <div className="mb-3">
               <span className="h4 fw-bold">₹{product.price.toLocaleString()}</span>
               <span className="text-muted ms-2 text-decoration-line-through">₹{product.originalPrice.toLocaleString()}</span>
-              <span className="badge bg-success ms-2">{product.discount}</span>
+              {discountLabel && <span className="badge bg-success ms-2">{discountLabel}</span>}
             </div>
 
             <p className="mb-3">{product.description || 'High-quality product from Sleepwell collection.'}</p>

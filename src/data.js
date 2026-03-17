@@ -40,7 +40,7 @@ export const products = [
     originalPrice: 34999,
     rating: 4.5,
     reviews: 2341,
-    image: '/images/product-placeholder.svg',
+    image: 'https://res.cloudinary.com/die3r33sy/raw/upload/v1771928562/mattify/products/product-1',
     discount: '29% off',
     tag: 'Bestseller'
   },
@@ -52,7 +52,7 @@ export const products = [
     originalPrice: 4999,
     rating: 4.3,
     reviews: 1876,
-    image: '/images/product-placeholder.svg',
+    image: 'https://res.cloudinary.com/die3r33sy/raw/upload/v1771928562/mattify/products/product-2',
     discount: '40% off',
     tag: 'Top Rated'
   },
@@ -64,7 +64,7 @@ export const products = [
     originalPrice: 2499,
     rating: 4.6,
     reviews: 3245,
-    image: '/images/product-placeholder.svg',
+    image: 'https://res.cloudinary.com/die3r33sy/raw/upload/v1771928562/mattify/products/product-3',
     discount: '40% off',
     tag: 'Bestseller'
   },
@@ -76,7 +76,7 @@ export const products = [
     originalPrice: 5999,
     rating: 4.4,
     reviews: 987,
-    image: '/images/product-placeholder.svg',
+    image: 'https://res.cloudinary.com/die3r33sy/raw/upload/v1771928562/mattify/products/product-4',
     discount: '42% off',
     tag: 'New Arrival'
   },
@@ -88,7 +88,7 @@ export const products = [
     originalPrice: 29999,
     rating: 4.7,
     reviews: 1543,
-    image: '/images/product-placeholder.svg',
+    image: 'https://res.cloudinary.com/die3r33sy/raw/upload/v1771928563/mattify/products/product-5',
     discount: '37% off',
     tag: 'Top Rated'
   },
@@ -100,7 +100,7 @@ export const products = [
     originalPrice: 6999,
     rating: 4.2,
     reviews: 654,
-    image: '/images/product-placeholder.svg',
+    image: 'https://res.cloudinary.com/die3r33sy/raw/upload/v1771928563/mattify/products/product-6',
     discount: '43% off',
     tag: 'Premium'
   },
@@ -112,7 +112,7 @@ export const products = [
     originalPrice: 1499,
     rating: 4.5,
     reviews: 2134,
-    image: '/images/product-placeholder.svg',
+    image: 'https://res.cloudinary.com/die3r33sy/raw/upload/v1771928563/mattify/products/product-7',
     discount: '40% off',
     tag: 'Essential'
   },
@@ -124,7 +124,7 @@ export const products = [
     originalPrice: 3499,
     rating: 4.3,
     reviews: 876,
-    image: '/images/product-placeholder.svg',
+    image: 'https://res.cloudinary.com/die3r33sy/raw/upload/v1771928563/mattify/products/product-8',
     discount: '43% off',
     tag: 'Comfort'
   }

@@ -1,4 +1,4 @@
-﻿[
+[
   {
     "id": 1,
     "name": "Premium Memory Foam Mattress",
@@ -7,10 +7,9 @@
     "originalPrice": 34999,
     "rating": 4.5,
     "reviews": 2341,
-    "image": "/images/product-placeholder.svg",
+    "image": "https://res.cloudinary.com/die3r33sy/raw/upload/v1771928562/mattify/products/product-1",
     "discount": "29% off",
-    "tag": "Bestseller",
-    "description": "Experience ultimate comfort with our premium memory foam mattress. Perfect for side, back, and stomach sleepers. Hypoallergenic and dust mite resistant."
+    "tag": "Bestseller"
   },
   {
     "id": 2,
@@ -20,10 +19,9 @@
     "originalPrice": 4999,
     "rating": 4.3,
     "reviews": 1876,
-    "image": "/images/product-placeholder.svg",
+    "image": "https://res.cloudinary.com/die3r33sy/raw/upload/v1771928562/mattify/products/product-2",
     "discount": "40% off",
-    "tag": "Top Rated",
-    "description": "Breathable 600 thread count Egyptian cotton. Ultra-soft and durable. Set includes 2 pillowcases and fitted/flat sheets."
+    "tag": "Top Rated"
   },
   {
     "id": 3,
@@ -33,10 +31,9 @@
     "originalPrice": 2499,
     "rating": 4.6,
     "reviews": 3245,
-    "image": "/images/product-placeholder.svg",
+    "image": "https://res.cloudinary.com/die3r33sy/raw/upload/v1771928562/mattify/products/product-3",
     "discount": "40% off",
-    "tag": "Bestseller",
-    "description": "Cervical support pillow designed for neck health. Reduces neck pain and improves sleep quality. CFC-free memory foam."
+    "tag": "Bestseller"
   },
   {
     "id": 4,
@@ -46,10 +43,9 @@
     "originalPrice": 5999,
     "rating": 4.4,
     "reviews": 987,
-    "image": "/images/product-placeholder.svg",
+    "image": "https://res.cloudinary.com/die3r33sy/raw/upload/v1771928562/mattify/products/product-4",
     "discount": "42% off",
-    "tag": "New Arrival",
-    "description": "Lightweight yet warm microfiber comforter. Perfect for all seasons. Easy to wash and maintains shape after washing."
+    "tag": "New Arrival"
   },
   {
     "id": 5,
@@ -59,10 +55,9 @@
     "originalPrice": 29999,
     "rating": 4.7,
     "reviews": 1543,
-    "image": "/images/product-placeholder.svg",
+    "image": "https://res.cloudinary.com/die3r33sy/raw/upload/v1771928563/mattify/products/product-5",
     "discount": "37% off",
-    "tag": "Top Rated",
-    "description": "Combines innerspring support with gel memory foam top. Excellent edge support and motion isolation. 10-year warranty."
+    "tag": "Top Rated"
   },
   {
     "id": 6,
@@ -72,10 +67,9 @@
     "originalPrice": 6999,
     "rating": 4.2,
     "reviews": 654,
-    "image": "/images/product-placeholder.svg",
+    "image": "https://res.cloudinary.com/die3r33sy/raw/upload/v1771928563/mattify/products/product-6",
     "discount": "43% off",
-    "tag": "Premium",
-    "description": "Luxurious 100% mulberry silk sheets. Anti-aging properties for hair and skin. Hypoallergenic and temperature regulating."
+    "tag": "Premium"
   },
   {
     "id": 7,
@@ -85,10 +79,9 @@
     "originalPrice": 1499,
     "rating": 4.5,
     "reviews": 2134,
-    "image": "/images/product-placeholder.svg",
+    "image": "https://res.cloudinary.com/die3r33sy/raw/upload/v1771928563/mattify/products/product-7",
     "discount": "40% off",
-    "tag": "Essential",
-    "description": "Waterproof and hypoallergenic mattress protector. Protect your investment from spills and allergens. Machine washable."
+    "tag": "Essential"
   },
   {
     "id": 8,
@@ -98,10 +91,8 @@
     "originalPrice": 3499,
     "rating": 4.3,
     "reviews": 876,
-    "image": "/images/product-placeholder.svg",
+    "image": "https://res.cloudinary.com/die3r33sy/raw/upload/v1771928563/mattify/products/product-8",
     "discount": "43% off",
-    "tag": "Comfort",
-    "description": "Hypoallergenic down alternative filling. Soft and supportive. Great for those with allergies. Set of 2 pillows."
+    "tag": "Comfort"
   }
 ]
-

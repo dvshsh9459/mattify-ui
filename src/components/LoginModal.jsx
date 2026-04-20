@@ -1,139 +1,103 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 
-const API_BASE = (import.meta.env.VITE_API_BASE || "http://localhost:5000/api").replace(/\/$/, "");
-const API_BASE_FALLBACKS = (() => {
-  const bases = new Set([API_BASE, "http://localhost:5000/api", "http://localhost:7000/api"]);
-  try {
-    const url = new URL(API_BASE);
-    const isLocalhost = url.hostname === "localhost" || url.hostname === "127.0.0.1";
-    if (isLocalhost) {
-      const port = Number(url.port);
-      if (Number.isFinite(port) && port > 0) {
-        for (let p = port; p < port + 10; p += 1) {
-          bases.add(`${url.protocol}//${url.hostname}:${p}/api`);
-        }
-      }
-    }
-  } catch (e) {
-    // ignore invalid base
-  }
-  return Array.from(bases);
-})();
+const DEFAULT_API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:7000/api'
 
 export default function LoginModal({ onClose, onLoginSuccess }) {
-  const [mobile, setMobile] = useState("");
-  const [code, setCode] = useState("");
-  const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [mobile, setMobile] = useState('')
+  const [code, setCode] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [message, setMessage] = useState(null)
+
+  // Scroll locking is handled centrally in App.jsx for showLogin/showCart
 
   const login = async () => {
     try {
-      const trimmed = String(mobile || "").trim();
+      const trimmed = String(mobile || '').trim()
       if (!trimmed) {
-        setMessage("Please enter your mobile number");
-        return;
-      }
-      if (!String(code || "").trim()) {
-        setMessage("Please enter any code");
-        return;
+        setMessage('Please enter your mobile number')
+        return
       }
 
-      setIsLoading(true);
-      let lastError = "Login failed";
-      for (const base of API_BASE_FALLBACKS) {
-        const res = await fetch(`${base}/auth/demo/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mobile: trimmed, code: String(code || "").trim() })
-        });
-        const contentType = res.headers.get("content-type") || "";
-        if (!contentType.includes("application/json")) {
-          lastError = "Server returned HTML. Check API base/port.";
-          continue;
-        }
-        const data = await res.json();
-        if (res.ok) {
-          localStorage.setItem("demo_token", data.token);
-          onLoginSuccess && onLoginSuccess(data.user, data.token);
-          onClose();
-          return;
-        }
-        lastError = data.error || "Login failed";
+      if (!String(code || '').trim()) {
+        setMessage('Please enter any code')
+        return
       }
-      setMessage(lastError);
+
+      setIsLoading(true)
+
+      const res = await fetch(`${DEFAULT_API_BASE}/userLogin/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobileNo: trimmed, code: code.trim() })
+      })
+
+      const ct = res.headers.get('content-type') || ''
+      if (!ct.includes('application/json')) {
+        setMessage('Server returned unexpected response. Check API base/port.')
+        setIsLoading(false)
+        return
+      }
+
+      const data = await res.json()
+      if (!res.ok) {
+        setMessage(data?.error || 'Login failed')
+        setIsLoading(false)
+        return
+      }
+
+      // Store contact info locally
+      localStorage.setItem('contactNo', trimmed)
+      localStorage.setItem('userId', data.user?.id)
+
+      if (typeof onLoginSuccess === 'function') {
+        const user = data.user || { mobileNo: trimmed }
+        onLoginSuccess(user)
+      }
+
+      onClose && onClose()
     } catch (e) {
-      setMessage(e?.message || "Login failed");
+      setMessage(e?.message || 'Login failed')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div
       className="position-fixed start-0 w-100"
-      style={{
-        top: "72px",
-        height: "calc(100vh - 72px)",
-        zIndex: 2000,
-        backgroundColor: "rgba(0,0,0,0.35)"
-      }}
+      onClick={onClose}
+      style={{ top: '72px', height: 'calc(100vh - 72px)', zIndex: 2000, backgroundColor: 'rgba(0,0,0,0.35)' }}
     >
       <div className="d-flex justify-content-end h-100 p-2 p-md-3">
         <div
           className="d-flex flex-column bg-white rounded-3 overflow-hidden"
-          style={{
-            width: "100%",
-            maxWidth: "460px",
-            height: "100%",
-            boxShadow: "0 12px 30px rgba(0,0,0,0.2)"
-          }}
+          onClick={(e) => e.stopPropagation()}
+          style={{ width: '100%', maxWidth: '460px', height: '100%', boxShadow: '0 12px 30px rgba(0,0,0,0.2)' }}
         >
-          <div className="position-relative d-flex align-items-center justify-content-center p-3 border-bottom">
-            <h5 className="mb-0 text-center">Login</h5>
-            <button
-              className="btn btn-sm btn-light position-absolute end-0 me-3"
-              onClick={onClose}
-            >
-              x
-            </button>
+          <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
+            <h5 className="mb-0">Login</h5>
+            <button className="btn btn-sm btn-light" onClick={onClose}>x</button>
           </div>
 
-          <div className="p-3 flex-grow-1 d-flex flex-column justify-content-center align-items-center text-center">
-            <>
-              <label className="form-label text-start w-100" style={{ maxWidth: "280px" }}>
-                Mobile number
-              </label>
+          <div className="p-3 flex-grow-1 overflow-auto">
+            <div className="mb-3">
+              <label className="form-label small">Mobile</label>
+              <input className="form-control" value={mobile} onChange={(e) => setMobile(e.target.value)} placeholder="Enter mobile number" />
+            </div>
+            <div className="mb-3">
+              <label className="form-label small">Code</label>
+              <input className="form-control" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter code" />
+            </div>
 
-              <input
-                className="form-control mb-3"
-                style={{ maxWidth: "280px" }}
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value)}
-                placeholder="Enter any mobile number"
-              />
+            {message && <div className="alert alert-danger" role="alert">{message}</div>}
 
-              <input
-                className="form-control mb-3"
-                style={{ maxWidth: "280px" }}
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="Enter any code"
-              />
-
-              <button
-                className="btn btn-primary w-100"
-                style={{ maxWidth: "280px" }}
-                onClick={login}
-                disabled={isLoading}
-              >
-                {isLoading ? "Logging in..." : "Login"}
-              </button>
-            </>
-
-            {message && <div className="mt-3 text-muted small">{message}</div>}
+            <div className="d-flex gap-2">
+              <button className="btn btn-outline-secondary" onClick={onClose} disabled={isLoading}>Cancel</button>
+              <button className="btn btn-primary" onClick={login} disabled={isLoading}>{isLoading ? 'Please wait...' : 'Login'}</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

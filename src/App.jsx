@@ -11,6 +11,7 @@ import { bannerSlides as localBanners, products as localProducts, categories } f
 import { formatDiscount } from './utils/formatProductValue'
 
 const API_BASE = (import.meta.env.VITE_API_BASE || 'http://localhost:5000/api').replace(/\/$/, '')
+const PROFILE_FIELDS_STORAGE_KEY = 'mattify_profile_fields'
 
 const normalizeCloudinaryUrl = (url) => {
   if (typeof url !== 'string') return url
@@ -23,6 +24,49 @@ const normalizeItems = (items) => (
     ? items.map((item) => ({ ...item, image: normalizeCloudinaryUrl(item.image) }))
     : items
 )
+
+const readStoredProfileFields = () => {
+  try {
+    const raw = localStorage.getItem(PROFILE_FIELDS_STORAGE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    return {
+      name: typeof parsed?.name === 'string' ? parsed.name : '',
+      email: typeof parsed?.email === 'string' ? parsed.email : '',
+      city: typeof parsed?.city === 'string' ? parsed.city : '',
+      state: typeof parsed?.state === 'string' ? parsed.state : '',
+      pincode: typeof parsed?.pincode === 'string' ? parsed.pincode : '',
+      address: typeof parsed?.address === 'string' ? parsed.address : ''
+    }
+  } catch (e) {
+    return null
+  }
+}
+
+const applyStoredProfileFields = (incomingUser) => {
+  if (!incomingUser) return incomingUser
+  const savedFields = readStoredProfileFields()
+  if (!savedFields) {
+    return {
+      ...incomingUser,
+      name: '',
+      email: '',
+      city: '',
+      state: '',
+      pincode: '',
+      address: ''
+    }
+  }
+  return {
+    ...incomingUser,
+    name: savedFields.name,
+    email: savedFields.email,
+    city: savedFields.city,
+    state: savedFields.state,
+    pincode: savedFields.pincode,
+    address: savedFields.address
+  }
+}
 
 export default function App(){
   const [cart, setCart] = useState([])
@@ -92,7 +136,7 @@ export default function App(){
         })
         const data = await res.json()
         if (res.ok) {
-          setUser(data.user)
+          setUser(applyStoredProfileFields(data.user))
         } else {
           localStorage.removeItem('demo_token')
         }
@@ -150,11 +194,32 @@ export default function App(){
   }
 
   const handleLoginSuccess = (user, token) => {
-    setUser(user)
+    setUser(applyStoredProfileFields(user))
     localStorage.setItem('demo_token', token)
     setFlashMessage('Login successful')
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current)
     flashTimerRef.current = setTimeout(() => setFlashMessage(null), 4000)
+  }
+  const handleProfileUpdate = (updatedUser) => {
+    const storedFields = {
+      name: typeof updatedUser?.name === 'string' ? updatedUser.name.trim() : '',
+      email: typeof updatedUser?.email === 'string' ? updatedUser.email.trim() : '',
+      city: typeof updatedUser?.city === 'string' ? updatedUser.city.trim() : '',
+      state: typeof updatedUser?.state === 'string' ? updatedUser.state.trim() : '',
+      pincode: typeof updatedUser?.pincode === 'string' ? updatedUser.pincode.trim() : '',
+      address: typeof updatedUser?.address === 'string' ? updatedUser.address.trim() : ''
+    }
+    localStorage.setItem(PROFILE_FIELDS_STORAGE_KEY, JSON.stringify(storedFields))
+    setUser((prev) => ({
+      ...(prev || {}),
+      ...(updatedUser || {}),
+      name: storedFields.name,
+      email: storedFields.email,
+      city: storedFields.city,
+      state: storedFields.state,
+      pincode: storedFields.pincode,
+      address: storedFields.address
+    }))
   }
   const handleLogout = async () => {
     const token = localStorage.getItem('demo_token')
@@ -187,6 +252,9 @@ export default function App(){
     }
     setShowCart(true)
   }
+  const closeCart = () => {
+    setShowCart(false)
+  }
   const openLogin = () => {
     setShowCart(false)
     setShowProfile(false)
@@ -197,14 +265,25 @@ export default function App(){
     setShowLogin(false)
     setShowProfile(true)
   }
+  const closeProfile = () => {
+    setShowProfile(false)
+  }
   const handleLogoClick = () => {
+    setShowCart(false)
+    setShowProfile(false)
     setSelectedCategory('All')
     setSearchQuery('')
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
   const handleCategorySelect = (category) => {
+    setShowCart(false)
+    setShowProfile(false)
     setSelectedCategory(category)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+  const handleSearchQueryChange = (value) => {
+    setShowCart(false)
+    setSearchQuery(value)
   }
 
   const removeFromCart = async (productId) => {
@@ -262,7 +341,7 @@ export default function App(){
     <div className="min-vh-100 bg-light d-flex flex-column">
       <Header
         searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        setSearchQuery={handleSearchQueryChange}
         cartCount={cart.length}
         categories={categories}
         selectedCategory={selectedCategory}
@@ -272,14 +351,17 @@ export default function App(){
         onLogout={handleLogout}
         onOpenCart={openCart}
         onLogoClick={handleLogoClick}
+        onCloseProfile={closeProfile}
+        onCloseCart={closeCart}
         user={user}
       />
 
-      {selectedCategory === 'All' && !isSearching && (
+      {!showProfile && selectedCategory === 'All' && !isSearching && (
         <Banner slides={bannersState} currentIndex={currentBannerIndex} onPrev={prevBanner} onNext={nextBanner} onSelect={setCurrentBannerIndex} />
       )}
 
-      <main className="container-fluid px-4 py-4 flex-grow-1">
+      {!showProfile && (
+        <main className="container-fluid px-4 py-4 flex-grow-1">
         {flashMessage && (
           <div className="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style={{zIndex: 1050, minWidth: '300px'}}>
             <strong>✓ Success!</strong> {flashMessage}
@@ -393,12 +475,19 @@ export default function App(){
             </div>
           </div>
         </div>
-      </main>
+        </main>
+      )}
 
-      {showProduct && <ProductModal product={currentProduct} onClose={() => setShowProduct(false)} onAddToCart={(p) => { addToCart(p); setShowProduct(false) }} />}
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} onLoginSuccess={handleLoginSuccess} />}
-      {showProfile && <ProfileModal user={user} onClose={() => setShowProfile(false)} />}
-      {showCart && (
+      {!showProfile && showProduct && <ProductModal product={currentProduct} onClose={() => setShowProduct(false)} onAddToCart={(p) => { addToCart(p); setShowProduct(false) }} />}
+      {!showProfile && showLogin && <LoginModal onClose={() => setShowLogin(false)} onLoginSuccess={handleLoginSuccess} />}
+      {showProfile && (
+        <ProfileModal
+          user={user}
+          onClose={() => setShowProfile(false)}
+          onUpdate={handleProfileUpdate}
+        />
+      )}
+      {!showProfile && showCart && (
         <CartModal
           cartItems={cart}
           isLoggedIn={Boolean(user)}
@@ -410,7 +499,7 @@ export default function App(){
         />
       )}
 
-      <Footer />
+      {!showProfile && <Footer />}
     </div>
   )
 }

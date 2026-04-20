@@ -47,6 +47,7 @@ export default function CartModal({ cartItems = [], isLoggedIn = false, onClose,
   return (
     <div
       className="position-fixed start-0 w-100"
+      onClick={onClose}
       style={{
         top: '72px',
         height: 'calc(100vh - 72px)',
@@ -57,6 +58,7 @@ export default function CartModal({ cartItems = [], isLoggedIn = false, onClose,
       <div className="d-flex justify-content-end h-100 p-2 p-md-3">
         <div
           className="d-flex flex-column bg-white rounded-3 overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
           style={{
             width: '100%',
             maxWidth: '460px',
